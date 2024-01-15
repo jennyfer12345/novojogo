@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cadastro</title>
+    <style>
+      body {
+        background-color: lightgray; /* Cor de fundo sólida */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .custom-bg {
+        background-color: #af216e;
+        padding: 2rem;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      .custom-text {
+        color: #ffffff; /* Cor do texto */
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: #ffffff; /* Cor do texto personalizada */
+      }
+
+      .custom-error {
+        color: #ff5252; /* Cor do texto de erro */
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .custom-button {
+        background-color: #468396; /* Cor de fundo do botão */
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        margin-right: 0.5rem;
+        transition: background-color 0.3s ease;
+      }
+
+      .custom-button:hover {
+        background-color: #29628a; /* Cor de fundo do botão ao passar o mouse por cima */
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        border: 1px solid #d1d5db;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="custom-bg">
+      <h1 class="custom-text">Cadastro</h1>
+      <form id="cadastroForm" method="POST" class="space-y-4">
+        <div>
+          <label for="nome" class="custom-text">Nome:</label>
+          <input type="text" id="nome" name="nome" />
+        </div>
+        <div>
+          <label for="email" class="custom-text">E-mail:</label>
+          <input type="email" id="email" name="email" />
+        </div>
+        <div>
+          <label for="senha" class="custom-text">Senha:</label>
+          <input type="password" id="senha" name="senha" />
+        </div>
+        <button type="submit" class="custom-button">Cadastrar</button>
+        <button id="loginButton" class="custom-button">
+          Ir para a página de Login
+        </button>
+      </form>
+      <p id="mensagem" class="custom-error"></p>
+    </div>
+    <script>
+      document
+        .getElementById("cadastroForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const nome = document.getElementById("nome").value;
+          const email = document.getElementById("email").value;
+          const senha = document.getElementById("senha").value;
+
+          fetch("http://localhost:3000/cadastrar", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ nome, email, senha }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.mensagem === "Usuário cadastrado com sucesso!") {
+                document.getElementById("mensagem").innerText =
+                  "Cadastro realizado com sucesso!";
+              } else {
+                document.getElementById("mensagem").innerText =
+                  "Erro ao cadastrar usuário.";
+              }
+            })
+            .catch((error) => {
+              console.error("Erro ao fazer a requisição:", error);
+              document.getElementById("mensagem").innerText =
+                "Erro interno do servidor.";
+            });
+        });
+
+      document
+        .getElementById("loginButton")
+        .addEventListener("click", function () {
+          window.location.href = "login.html";
+        });
+    </script>
+  </body>
+</html>

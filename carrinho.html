@@ -1,0 +1,100 @@
+<!-- carrinho.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrinho de Compras</title>
+    <style>
+      img {
+        height: 300px;
+      }
+
+      .remove-btn,
+      #finalizarCompra {
+        background-color: #af216e;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .remove-btn:hover,
+      #finalizarCompra:hover {
+        background-color: #8b1645;
+      }
+
+      #total {
+        font-size: 18px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Carrinho de Compras</h1>
+
+    <div id="cartItems">
+      <!-- A lista de jogos adicionados ao carrinho será exibida aqui -->
+    </div>
+    <p id="total">Total:</p>
+    <button id="finalizarCompra" onclick="finalizarCompra()">
+      Finalizar Compra
+    </button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        exibirCarrinho();
+      });
+
+      function exibirCarrinho() {
+        // Recupera os jogos armazenados no carrinho
+        var carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+        // Exibe os jogos no carrinho
+        var cartItemsContainer = document.getElementById("cartItems");
+        carrinho.forEach(function (game, index) {
+          var gameItem = document.createElement("div");
+          gameItem.innerHTML = `
+          <img src="${game.image}" alt="${game.name}">
+          <p>${game.name}</p>
+          <p>${game.price}</p>
+          <button class="remove-btn" onclick="removeGame(${index})">Remover</button>
+        `;
+          cartItemsContainer.appendChild(gameItem);
+        });
+
+        // Exibe o total do carrinho
+        calcularTotal();
+      }
+
+      function removeGame(index) {
+        var carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        carrinho.splice(index, 1); // Remove o jogo do carrinho
+        localStorage.setItem("carrinho", JSON.stringify(carrinho));
+        location.reload(); // Recarrega a página para refletir as alterações
+      }
+
+      function calcularTotal() {
+        var carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+        var total = carrinho.reduce(function (acc, game) {
+          // Converte o preço para um número (remove o "R$" e converte para float)
+          var price = parseFloat(
+            game.price.replace("R$", "").replace(",", ".")
+          );
+
+          return acc + price;
+        }, 0);
+
+        var totalElement = document.getElementById("total");
+        totalElement.textContent = "Total: R$" + total.toFixed(2);
+      }
+
+      function finalizarCompra() {
+        // Lógica para finalizar a compra, por exemplo, redirecionar para uma página de pagamento
+        alert("Compra finalizada! Redirecionando para o pagamento...");
+      }
+    </script>
+  </body>
+</html>
